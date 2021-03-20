@@ -3,6 +3,8 @@ import Router from 'vue-router'
 import Login from '@/views/Login'
 import Index from '@/views/Index'
 import User from '@/views/user/User'
+import GoodsGoto from '@/views/business/GoodsGoto'
+import Suppliers from '@/views/business/Suppliers'
 
 Vue.use(Router)
 
@@ -10,7 +12,7 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      redirect: '/users'
+      redirect: '/GoodsGoto'
     },
     {
       path: '/login',
@@ -34,6 +36,22 @@ const router = new Router({
           component: User,
           meta: {
             title: '用户'
+          }
+        },
+        {
+          path: '/goodsGoto',
+          name: 'GoodsGoto',
+          component: GoodsGoto,
+          meta: {
+            title: '物资去处'
+          }
+        },
+        {
+          path: '/suppliers',
+          name: 'Suppliers',
+          component: Suppliers,
+          meta: {
+            title: '物资来源'
           }
         }
       ]

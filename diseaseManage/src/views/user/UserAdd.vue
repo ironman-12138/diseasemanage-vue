@@ -257,8 +257,7 @@
       //添加用户
       addUser(){
         saveUser(this.user).then(res => {
-          var result = res.data;
-          if (result.code == 200) {
+          if (res.code == 200) {
             this.$notify.success({
               title: "操作成功",
               message: "用户添加成功"
@@ -270,7 +269,7 @@
             this.$emit('getUserList');
             this.$emit('getDeptList');
           }else{
-            return this.$message.error('用户添加失败'+res.message);
+            return this.$message.error('用户添加失败');
           }
         })
       }

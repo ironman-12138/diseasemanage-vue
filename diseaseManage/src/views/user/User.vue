@@ -12,12 +12,12 @@
             <el-form :inline="true" :model="userVo" label-width="70px" class="demo-form-inline">
                 <el-form-item label="部门">
                     <el-select v-model="userVo.departmentId" placeholder="请选择">
-                        <el-option>
+                        <el-option value="">
                             <span style="float: left">全部</span>
                         </el-option>
                         <el-option
                         v-for="item in deptList"
-                        :key="item.value"
+                        :key="item.id"
                         :label="item.name"
                         :value="item.id">
                         <span style="float: left">{{ item.name }}</span>
@@ -41,7 +41,7 @@
                 </el-form-item>
                 <el-form-item style="margin-left: 30px">
                     <el-button icon="el-icon-refresh" @click="resetUserVo">重置</el-button>
-                    <el-button type="primary" icon="el-icon-search" @click="getUserList">查询</el-button>
+                    <el-button type="primary" icon="el-icon-search" @click="select">查询</el-button>
                     <el-button type="success" icon="el-icon-plus" @click="show">添加</el-button>
                     <el-button type="warning" icon="el-icon-download">导出</el-button>
                 </el-form-item>
@@ -149,6 +149,13 @@
                     sex: '',
                     nickname: ''
                 },
+                user: {
+                    departmentId: '',
+                    username: '',
+                    email: '',
+                    sex: '',
+                    nickname: ''
+                },
                 //用户集合
                 userList: [],
                 //部门集合
@@ -171,17 +178,23 @@
                 this.currentPage = val;
                 this.getUserList();
             },
+            // 条件查询
+            select(){
+                this.currentPage = 1;
+                this.user = this.userVo;
+                this.getUserList();
+            },
             //获取用户列表
             getUserList(){
-                selectUserList(this.currentPage,this.pageSize,this.userVo).then(res => {
-                    this.userList = res.data.data.users;
-                    this.total = res.data.data.total;
+                selectUserList(this.currentPage,this.pageSize,this.user).then(res => {
+                    this.userList = res.data.users;
+                    this.total = res.data.total;
                 });
             },
             //获取部门列表
             getDeptList(){
                 selectDeptAndCount().then(res => {
-                    this.deptList = res.data.data.dept;
+                    this.deptList = res.data.dept;
                 })
             },
             //重置所有查询条件
@@ -216,5 +229,9 @@
 <style>
     .user-pagination{
         padding: 15px;
+    }
+    /* 让表格对齐 */
+    body .el-table th.gutter {
+        display: table-cell !important;
     }
 </style>

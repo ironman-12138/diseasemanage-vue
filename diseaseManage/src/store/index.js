@@ -12,8 +12,8 @@ const moduleA = {
 //2.创建对象
 const store = new Vuex.Store({
     state:{
-        token: '',
-        userInfo: JSON.parse(sessionStorage.getItem("userInfo"))
+        tokenStr: window.sessionStorage.getItem('tokenStr'),
+        userInfo: ''
     },
     //修改state中的数据必须经过mutations
     mutations:{
@@ -21,7 +21,7 @@ const store = new Vuex.Store({
         setToken(state,token){
             state.token = token;
             //localStorage 用于本地永久保存数据
-            localStorage.setItem("token",token);
+            localStorage.setItem("tokenStr",token);
         },
         //给userInfo赋值
         setUserInfo(state,userInfo){
@@ -34,8 +34,8 @@ const store = new Vuex.Store({
         removeTokenAndInfo(state){
             state.token = '';
             state.userInfo = {};
-            localStorage.setItem("token",'');
             sessionStorage.setItem("userInfo",JSON.stringify(''));
+            sessionStorage.setItem('tokenStr','');
         }
     },
     //计算属性

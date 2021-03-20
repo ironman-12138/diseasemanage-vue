@@ -262,7 +262,7 @@ export default {
                   id: 310,
                   parentId: 311,
                   menuName: "物资去处",
-                  url: "/consumers",
+                  url: "/goodsGoto",
                   icon: "el-icon-edit",
                   orderNum: 1,
                   open: 0,

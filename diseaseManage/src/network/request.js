@@ -17,38 +17,54 @@ const request2 = axios.create({
 
 //前置拦截
 request1.interceptors.request.use(config => {
+
+    //如果存在token，请求携带token
+    if (window.sessionStorage.getItem('tokenStr')) {
+        config.headers['Authorization'] = window.sessionStorage.getItem('tokenStr');
+    }
     return config;
+    
 })
 
 //后置拦截
 request1.interceptors.response.use(response => {
 
-    //let res = response.data;
-
     console.log(response);
-
-    // if(res.code == 200){
-    //     return response;
-    // }else{
-    //     ElementUI.Message.error(res.message,{duration:2*1000})
-    //     return Promise.reject(response.data.message);
-    // }
-    return response;
+    //调到接口了
+    if(response.status && response.status == 200){
+        
+        //业务逻辑错误
+        if(response.data.code == 402 || response.data.code == 408 || 
+            response.data.code == 405 || response.data.code == 410 || response.data.code == 411 || response.data.code == 412){
+            ElementUI.Message.error(response.data.message,{duration:2*1000})
+            return;
+        }
+        if(response.data.message){
+            ElementUI.Message.success({message:response.data.message})
+        }
+    }
+    return response.data;
 
 },error => {
-    if(error.response.data){
-        error.message = error.response.data;
-    }
 
-    //返回401错误表示需要先登录采用操作
-    if(error.response.status === 401) {
+    if (error.response.code == 504 || error.response.code == 404){
+        ElementUI.Message.error({message:'服务器被吃了/(ㄒoㄒ)/~~'})
+    }else if (error.response.code == 403) {
+        ElementUI.Message.error({message:'权限不足，请联系管理员'})
+    }else if(error.response.code === 401) {
         store.commit("removeTokenAndInfo")
         router.push("/login")
         ElementUI.Message.error("请先登录",{duration:2*1000})
+    }else {
+        if (error.response.data.message) {
+            ElementUI.Message.error(error.response.data.message,{duration:2*1000})
+        }else {
+            ElementUI.Message.error('未知错误',{duration:2*1000})
+        }
     }
 
-    ElementUI.Message.error(error.message,{duration:2*1000})
-    return Promise.reject(error);  //阻止继续执行
+    return;  //阻止继续执行
+    
 })
 
 export {

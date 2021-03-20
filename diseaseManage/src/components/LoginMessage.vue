@@ -7,7 +7,7 @@
             <el-dropdown-item icon="el-icon-ship">交流讨论</el-dropdown-item>
         </el-dropdown-menu>
         </el-dropdown>
-        <span v-if="hasLogin"><el-link href="/login" type="success">{{username}}</el-link></span>
+        <span v-if="hasLogin"><el-link type="success">{{username}}</el-link></span>
         <span v-if="hasLogin"><el-link @click="logout" type="danger">退出</el-link></span>
         <span v-else><el-link href="/login" type="primary">登录</el-link></span>
     </div>
@@ -28,22 +28,36 @@
         methods: {
             logout(){
                 const _this = this;
-                request1("/logout",{
-                    headers: {
-                        "Authorization": _this.$store.state.token
-                    }
+                request1({
+                    url: "/logout",
+                    method: "post"
                 }).then(res => {
                     _this.$store.commit("removeTokenAndInfo");
                     _this.$router.push("/login");
                 })
+            },
+            getInfo(){
+                const _this = this;
+                //获取登录用户的信息
+                request1({
+                    url: '/user/info',
+                    method: 'get',
+                }).then(res => {
+                    console.log(res);
+                    this.username = res.username;
+                    this.avatar = res.avatar;
+                    this.hasLogin = true;
+                    _this.$store.commit("setUserInfo",res);
+                })
             }
         },
         created() {
-            // if (this.$store.state.userInfo.username) {
-            //     this.username = this.$store.state.userInfo.username;
-            //     this.avatar = this.$store.state.userInfo.avatar;
-            //     this.hasLogin = true;
-            // }
+            this.getInfo();
+            if (this.$store.state.userInfo.username) {
+                this.username = this.$store.state.userInfo.username;
+                this.avatar = this.$store.state.userInfo.avatar;
+                this.hasLogin = true;
+            }
         }
     };
 </script>

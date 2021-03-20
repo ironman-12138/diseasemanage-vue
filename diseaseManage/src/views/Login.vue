@@ -84,16 +84,12 @@ export default {
                     data: _this.ruleForm
                 }).then(res => {
                     console.log(res);
-                    //获取响应头中的jwt数据
-                    //const jwt = res.headers['authorization'];
-                    //const userInfo = res.data.data;
-                    //_this.$store.commit("setToken",jwt);
-                    //_this.$store.commit("setUserInfo",userInfo);
-                    // console.log(_this.$store.state.token);
-                    // console.log(_this.$store.state.userInfo);
-
+                    //获取响应头中的token数据并存储
+                    const tokenStr = res.data.tokenMap.tokenHead+res.data.tokenMap.token
+                    window.sessionStorage.setItem('tokenStr',tokenStr);
+                    
                     //页面跳转
-                    //_this.$router.push("/");
+                    _this.$router.replace("/users");
                  });
             } else {
                 console.log('error submit!!');
