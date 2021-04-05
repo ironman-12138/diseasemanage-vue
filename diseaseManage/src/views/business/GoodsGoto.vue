@@ -2,7 +2,7 @@
   <div>
     <!-- 面包屑 -->
     <el-breadcrumb separator="/" style="margin-bottom: 10px">
-        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item>物资去处</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card class="box-card">

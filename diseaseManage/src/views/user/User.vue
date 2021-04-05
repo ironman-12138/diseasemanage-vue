@@ -2,7 +2,7 @@
     <div>
         <!-- 面包屑 -->
         <el-breadcrumb separator="/" style="margin-bottom: 10px">
-            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item>系统管理</el-breadcrumb-item>
             <el-breadcrumb-item>用户管理</el-breadcrumb-item>
         </el-breadcrumb>        
@@ -43,7 +43,7 @@
                     <el-button icon="el-icon-refresh" @click="resetUserVo">重置</el-button>
                     <el-button type="primary" icon="el-icon-search" @click="select">查询</el-button>
                     <el-button type="success" icon="el-icon-plus" @click="show">添加</el-button>
-                    <el-button type="warning" icon="el-icon-download">导出</el-button>
+                    <!-- <el-button type="warning" icon="el-icon-download">导出</el-button> -->
                 </el-form-item>
             </el-form>
             <el-table :data="userList" border max-height="420px" style="width: 100%;">
@@ -95,6 +95,7 @@
                     <template slot-scope="scope">
                         <el-switch
                         v-model="scope.row.enable" 
+                        @change="changUserStatus(scope.row)"
                         :active-value=0
                         :inactive-value=1
                         active-color="#13ce66"
@@ -104,9 +105,10 @@
                 </el-table-column>
                 <el-table-column
                 label="操作">
-                    <el-button type="primary" size="mini" icon="el-icon-edit">编辑</el-button>
-                    <el-button type="success" size="mini" icon="el-icon-delete">删除</el-button>
-                    <el-button type="warning" size="mini" icon="el-icon-setting">设置</el-button>
+                    <template slot-scope="scope">
+                        <el-button type="primary" size="mini" icon="el-icon-edit" @click="edit(scope.row.id)">编辑</el-button>
+                        <el-button type="success" size="mini" icon="el-icon-delete" @click="deleteById(scope.row.id)">删除</el-button>
+                    </template>
                 </el-table-column>
             </el-table>
             <div class="user-pagination">
@@ -128,12 +130,101 @@
                     @getDeptList="getDeptList"
                     ref="addOrUpdateRef">
             </UserAdd>
+
+            <!-- 修改对话框 -->
+            <el-dialog title="修改用户" :visible.sync="editDialogVisible" width="50%" @close="editClose">
+                <span>
+                <el-form
+                        :model="editForm"
+                        :label-position="labelPosition"
+                        ref="editFormRef"
+                        label-width="80px"
+                >
+                    <el-row>
+                    <el-col :span="10">
+                        <div class="grid-content bg-purple">
+                        <el-form-item label="用户名" prop="username">
+                            <el-input v-model="editForm.username" :disabled="true"></el-input>
+                            <el-input
+                                    type="hidden"
+                                    v-model="editForm.id"
+                                    :disabled="true"
+                                    style="display:none;"
+                            ></el-input>
+                        </el-form-item>
+                        </div>
+                    </el-col>
+                    <el-col :span="12">
+                        <div class="grid-content bg-purple-light">
+                        <el-form-item label="部门" prop="departmentId">
+                            <el-select v-model="editForm.departmentId" placeholder="请选择所属部门">
+                            <el-option
+                                    v-for="department in deptList"
+                                    :key="department.id"
+                                    :label="department.name"
+                                    :value="department.id"
+                            ></el-option>
+                            </el-select>
+                        </el-form-item>
+                        </div>
+                    </el-col>
+                    </el-row>
+
+                    <el-row>
+                    <el-col :span="10">
+                        <div class="grid-content bg-purple">
+                        <el-form-item label="昵称" prop="nickname">
+                            <el-input v-model="editForm.nickname"></el-input>
+                        </el-form-item>
+                        </div>
+                    </el-col>
+                    <el-col :span="12">
+                        <div class="grid-content bg-purple-light">
+                        <el-form-item label="性别" prop="sex">
+                            <el-radio-group v-model="editForm.sex">
+                            <el-radio :label="1">帅哥</el-radio>
+                            <el-radio :label="0">美女</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                        </div>
+                    </el-col>
+                    </el-row>
+
+                    <el-form-item label="邮箱" prop="email">
+                    <el-input v-model="editForm.email"></el-input>
+                    </el-form-item>
+                    <el-form-item label="联系方式" prop="phoneNumber">
+                    <el-input v-model="editForm.phoneNumber"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="birth" label="生日">
+                    <el-col :span="11">
+                        <el-date-picker
+                                type="date"
+                                value-format="yyyy年MM月dd日"
+                                placeholder="选择出生日期"
+                                v-model="editForm.birth"
+                                style="width: 100%;"
+                        ></el-date-picker>
+                    </el-col>
+                    </el-form-item>
+                </el-form>
+            </span>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editDialogVisible = false">取 消</el-button>
+                <el-button
+                        type="primary"
+                        @click="updateUser"
+                        :loading="btnLoading"
+                        :disabled="btnDisabled"
+                >确 定</el-button>
+                </span>
+            </el-dialog>
         </el-card>
     </div>
 </template>
 
 <script>
-    import {selectUserList} from '@/api/users'
+    import {selectUserList,edit,deleteById,update,updateStatus} from '@/api/users'
     import {selectDeptAndCount} from '@/api/dept'
     import UserAdd from '@/views/user/UserAdd'
 
@@ -164,7 +255,14 @@
                 pageSize: 6,
                 total: 100,
                 //是否展示用户添加弹窗
-                addOrUpdateVisible: false
+                addOrUpdateVisible: false,
+                //修改对话框显示
+                editDialogVisible: false,
+                editForm: {}, //更新表单
+                //控制按钮是否可用和旋转
+                btnLoading: false,
+                btnDisabled: false,
+                labelPosition: "right", //lable对齐方式
             };
         },
         methods: {
@@ -217,7 +315,62 @@
                 }else{
                     this.addOrUpdateVisible = true;
                 }
-            }
+            },
+            /**
+             * 关闭编辑弹出框
+             */
+            editClose() {
+                this.$refs.editFormRef.clearValidate();
+                this.editForm = {};
+            },
+            //编辑用户
+            edit(id) {
+                edit(id).then(res => {
+                    console.log(res);
+                    if (res.success) {
+                        this.editForm = res.data.user;
+                        this.editForm.id = id;
+                        this.editDialogVisible = true;
+                    }
+                })
+            },
+            //删除用户
+            deleteById(id) {
+                deleteById(id).then(res => {
+                    if (res.success) {
+                        this.getUserList();
+                    }
+                })
+            },
+            //更新用户
+            updateUser() {
+                console.log(this.editForm);
+                update(this.editForm).then(res => {
+                    console.log(res);
+                    if (res.success) {
+                        this.getUserList();
+                        this.editClose();
+                    }
+                })
+            },
+            /**
+             * 禁用启用用户
+             */
+            async changUserStatus(row) {
+                console.log(row);
+                updateStatus(row.id,row.enable).then(res => {
+                    if(!res.success){
+                        this.$message.error("更新用户状态失败:");
+                        row.enable = !row.enable;
+                    } else {
+                        const message = row.enable ? '用户状态已禁用' : '用户状态已启用';
+                        this.$notify.success({
+                            title: '操作成功',
+                            message: message,
+                        });
+                    }
+                })
+            },
         },
         created() {
             this.getUserList();

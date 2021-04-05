@@ -4,16 +4,12 @@ import Vuex from "vuex"
 //1.安装插件
 Vue.use(Vuex)
 
-const moduleA = {
-    state:{},
-    getters:{}
-} 
-
 //2.创建对象
 const store = new Vuex.Store({
     state:{
         tokenStr: window.sessionStorage.getItem('tokenStr'),
-        userInfo: ''
+        userInfo: '',
+        menus: []  //存放菜单列表
     },
     //修改state中的数据必须经过mutations
     mutations:{
@@ -36,12 +32,19 @@ const store = new Vuex.Store({
             state.userInfo = {};
             sessionStorage.setItem("userInfo",JSON.stringify(''));
             sessionStorage.setItem('tokenStr','');
+        },
+        //保存菜单列表
+        setMenusList(state,menus){
+            state.menus = menus;
         }
     },
     //计算属性
     getters:{
         getUser(state){
             return state.userInfo;
+        },
+        getMenusList(state){
+            return state.menus;
         }
     },
     //执行异步操作

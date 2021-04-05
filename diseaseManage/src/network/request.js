@@ -29,7 +29,6 @@ request1.interceptors.request.use(config => {
 //后置拦截
 request1.interceptors.response.use(response => {
 
-    console.log(response);
     //调到接口了
     if(response.status && response.status == 200){
         

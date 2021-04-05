@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-for="(menu,i) in menuList" :key="i">
-            <el-submenu :disabled="menu.disable" :index="menu.id + ''" v-if="menu.children.length > 0">
+            <el-submenu :disabled="menu.available==0?true:false" :index="menu.id + ''" v-if="menu.children.length > 0">
                 <template slot="title">
                     <i :class="menu.icon"></i>
                     <span>{{menu.menuName}}</span>

@@ -62,3 +62,13 @@ export const updateConsumer= (consumer) => {
         data: consumer
     })
 }
+
+/**
+ * 获取所有物资去向
+ */
+export const findAll= () => {
+    return request1({
+        url: "/consumer/findAll",
+        method: "get"
+    })
+}

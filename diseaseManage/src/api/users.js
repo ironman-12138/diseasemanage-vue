@@ -41,3 +41,47 @@ export const saveUser= (user) => {
         data: user
     })
 }
+
+/**
+ * 根据id查询用户
+ */
+export const edit= (id) => {
+    return request1({
+        url: "/user/edit",
+        method: "post",
+        params: {"id":id}
+    })
+}
+
+/**
+ * 删除用户
+ */
+export const deleteById= (id) => {
+    return request1({
+        url: "/user/delete",
+        method: "post",
+        params: {"id":id}
+    })
+}
+
+/**
+ * 更新用户
+ */
+export const update= (editForm) => {
+    return request1({
+        url: "/user/update",
+        method: "post",
+        params: editForm
+    })
+}
+
+/**
+ * 禁用启用用户
+ */
+export const updateStatus= (id,enable) => {
+    return request1({
+        url: "/user/updateStatus",
+        method: "post",
+        params: {"id":id,"enable":enable}
+    })
+}

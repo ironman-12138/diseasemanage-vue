@@ -40,13 +40,14 @@
 
 <script>
 import {request1} from '@/network/request'
+import {getMenuList} from "@/api/system"
 export default {
     name: 'Login',
     data() {
         return {
             ruleForm: {
-                username: '',
-                password: '',
+                username: 'admin',
+                password: '123456',
                 code: '',
             },
             /**与上文  '表单内容' 中 <el-form> 表单的 :rules 属性值相同 */
@@ -87,9 +88,10 @@ export default {
                     //获取响应头中的token数据并存储
                     const tokenStr = res.data.tokenMap.tokenHead+res.data.tokenMap.token
                     window.sessionStorage.setItem('tokenStr',tokenStr);
-                    
+                    // 获取用户对应菜单列表
+                    this.getMenuList();
                     //页面跳转
-                    _this.$router.replace("/users");
+                    _this.$router.replace("/welcome");
                  });
             } else {
                 console.log('error submit!!');
@@ -103,6 +105,14 @@ export default {
         },
         updateCaptcha() {
             this.captchaUrl = 'http://localhost:8081/captcha?time=' + new Date()
+        },
+        // 获取用户对应菜单列表
+        getMenuList() {
+            var that = this;
+            getMenuList().then(res => {
+                console.log(res);
+                that.$store.commit("setMenusList",res);
+            })
         },
     }
 };

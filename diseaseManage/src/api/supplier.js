@@ -62,3 +62,13 @@ export const updateSupplier= (supplier) => {
         data: supplier
     })
 }
+
+/**
+ * 获取所有物资来源
+ */
+export const findAll= () => {
+    return request1({
+        url: "/supplier/findAll",
+        method: "post"
+    })
+}
