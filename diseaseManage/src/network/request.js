@@ -38,9 +38,9 @@ request1.interceptors.response.use(response => {
             ElementUI.Message.error(response.data.message,{duration:2*1000})
             return;
         }
-        if(response.data.message){
-            ElementUI.Message.success({message:response.data.message})
-        }
+        // if(response.data.message){
+        //     ElementUI.Message.success({message:response.data.message})
+        // }
     }
     return response.data;
 

@@ -30,13 +30,13 @@
                             @click="addDialogVisible=true"
                     >添加</el-button>
                 </el-col>
-                <el-col :span="2">
+                <!-- <el-col :span="2">
                     <el-button
                             size="small"
                             icon="el-icon-download"
                             @click="downExcel"
                     >导出</el-button>
-                </el-col>
+                </el-col> -->
             </el-row>
             <!-- 表格区域 -->
             <template>

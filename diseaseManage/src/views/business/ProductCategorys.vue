@@ -213,7 +213,6 @@
             editCloseDialog(){
                 this.$refs.editRuleFormRef.clearValidate();
                 this.editRuleForm = {};
-
             },
             clearParent(){
                 this.addRuleForm.pid='';

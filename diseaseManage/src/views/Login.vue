@@ -26,7 +26,7 @@
                             <img :src="captchaUrl" @click="updateCaptcha">
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+                            <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
                             <el-button @click="resetForm('ruleForm')">重置</el-button>
                         </el-form-item>
                     </el-form>
@@ -46,8 +46,8 @@ export default {
     data() {
         return {
             ruleForm: {
-                username: 'admin',
-                password: '123456',
+                username: '',
+                password: '',
                 code: '',
             },
             /**与上文  '表单内容' 中 <el-form> 表单的 :rules 属性值相同 */

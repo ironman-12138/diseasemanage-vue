@@ -26,13 +26,13 @@
                             >父级</el-button>
                         </div>
                     </el-col>
-                    <el-col :span="2">
+                    <!-- <el-col :span="2">
                         <el-button
                                 style="margin-left:20px;"
                                 icon="el-icon-download"
                                 @click="downExcel"
                         >导出</el-button>
-                    </el-col>
+                    </el-col> -->
 
                 </el-row>
 
